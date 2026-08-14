@@ -1,0 +1,61 @@
+# Build the Vite app and publish it to GitHub Pages on every push to main.
+#
+# This deploys the *static* front end only — the FastAPI backend is not part of
+# this pipeline. The app runs fully on the bundled JSON (see src/api.ts): pool
+# selection and personality weighting happen in the browser, so no server is
+# needed for people to try it. To point the built site at a hosted backend
+# instead, set a VITE_API_BASE repository variable and it is picked up below.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Least-privilege token scoped to publishing Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; let an in-progress run finish rather than cancelling it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        # VITE_API_BASE is optional: empty -> pure static (default). Set it as a
+        # repository variable to wire the built site to a hosted API.
+        env:
+          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

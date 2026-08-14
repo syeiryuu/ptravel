@@ -1,0 +1,14 @@
+# 下一站扭蛋 — Python dependencies
+#
+# The data pipeline (collect/clean/generate/recommend) uses only the standard
+# library, so it stays dependency-free. These two are for the HTTP service layer
+# in pipeline/api (FastAPI). Install with:
+#
+#   python3 -m pip install -r requirements.txt
+#
+# Run the API:
+#
+#   uvicorn pipeline.api.app:app --reload --port 8787
+
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.29,<1.0
