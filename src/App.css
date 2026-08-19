@@ -248,9 +248,9 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 
 /* ---------- Page 4: Profile (我的) ---------- */
 .profile{background:linear-gradient(170deg,#fbdbe8 0%,#f7d3e6 30%,#f6d7e0 60%,#fadfe0 100%);
-  overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:16px 22px calc(62px + 16px);display:flex;flex-direction:column;align-items:center;
-  justify-content:flex-start}
+  overflow:hidden;
+  padding:20px 22px calc(58px + 14px);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px}
 /* subtle sparkle dots on the pink backdrop */
 .profile::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(circle at 16% 12%,rgba(255,255,255,.7) 0 3px,transparent 4px),
@@ -271,13 +271,16 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 .profile .g2{width:11px;height:11px;right:40px;top:230px;opacity:.8;background:#fff0b8}
 .profile .g3{width:13px;height:13px;left:40px;top:520px;bottom:auto;opacity:.8;background:#ffd9ec}
 
-/* Title 我的 — real 3D balloon-lettering asset */
-.profile-title{position:relative;z-index:1;margin:0 0 10px;display:flex;justify-content:center;line-height:0;flex:none}
-.profile-title-img{width:104px;height:auto;display:block;
-  filter:drop-shadow(0 8px 14px rgba(180,110,170,.3))}
+/* Title 我的 — real 3D balloon-lettering asset.
+   The lettering is soft pink, so we lift it off the pink backdrop with a
+   white halo + a deeper drop shadow, and give it breathing room up top so
+   it never gets clipped under the header. */
+.profile-title{position:relative;z-index:1;margin:0;display:flex;justify-content:center;line-height:0;flex:none}
+.profile-title-img{width:150px;height:auto;display:block;
+  filter:drop-shadow(0 0 6px rgba(255,255,255,.85)) drop-shadow(0 10px 18px rgba(170,90,150,.4))}
 
 /* Cards */
-.pcard{position:relative;z-index:1;width:100%;max-width:330px;margin:0 0 10px;flex:none;
+.pcard{position:relative;z-index:1;width:100%;max-width:330px;margin:0;flex:none;
   background:rgba(255,255,255,.94);border-radius:22px;padding:14px 16px;
   box-shadow:0 16px 34px rgba(180,120,160,.2),inset 0 1px 0 rgba(255,255,255,.9)}
 .pcard-head{display:flex;align-items:center;gap:13px;margin-bottom:16px}
@@ -357,7 +360,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 .pref-pill.pink.active{color:#e5709f;background:linear-gradient(180deg,#fce3ec,#f8d2df)}
 
 /* Save button (shares the warm gacha CTA feel) */
-.save-btn{position:relative;z-index:1;margin-top:4px;width:270px;height:54px;border-radius:27px;
+.save-btn{position:relative;z-index:1;margin-top:2px;width:270px;height:54px;border-radius:27px;
   font-size:19px;font-weight:800;color:#fff;letter-spacing:4px;
   background:linear-gradient(180deg,#ffd977 0%,#ffc55c 48%,#f9b23f 100%);
   box-shadow:0 7px 0 #eda52f,0 14px 22px rgba(238,167,50,.36),inset 0 2px 3px rgba(255,255,255,.7);
