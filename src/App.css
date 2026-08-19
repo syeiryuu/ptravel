@@ -367,9 +367,9 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
     height:100dvh;min-height:100dvh;width:100vw;
     background:linear-gradient(168deg,#fdfbef 0%,#fbf7e4 40%,#eef4dd 70%,#dcf0dd 100%)}
   .device{width:375px;height:812px;border-radius:0;box-shadow:none;
-    position:absolute;left:50%;top:0;
-    transform-origin:top center;
-    transform:translateX(-50%) scale(calc(100vw / 375))}
+    position:absolute;left:0;top:0;
+    transform-origin:top left;
+    transform:scale(calc(100vw / 375))}
   /* The bottom tab bar is lifted out of the scaled artboard and pinned to the
      real viewport bottom, so the 我的 entry is always visible and full-width,
      regardless of how the artboard scales. */
