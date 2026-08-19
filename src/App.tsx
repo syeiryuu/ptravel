@@ -292,8 +292,21 @@ function App() {
     setPage('welcome')
   }
 
+  // The artboard is letterboxed on phones; fill that space with the *current*
+  // page's own tone so the padding never looks like the wrong (welcome) page.
+  const stageTone =
+    tab === 'profile'
+      ? 'stage-profile'
+      : page === 'result'
+        ? luck.isSuper
+          ? 'stage-result-super'
+          : 'stage-result'
+        : page === 'machine'
+          ? 'stage-machine'
+          : 'stage-welcome'
+
   return (
-    <div className="stage">
+    <div className={`stage ${stageTone}`}>
       <div className="device">
         {tab === 'main' ? (
           <div className={`swap ${leaving ? 'leaving' : ''}`} key={drawId + '-' + page}>
@@ -570,43 +583,43 @@ function Profile() {
         <img className="profile-title-img" src={profileTitle} alt="我的" />
       </h1>
 
-      <div className="pcard rise d1">
-        <div className="pcard-head">
-          <img className="picon" src={iconMbti} alt="" aria-hidden="true" />
+      <div className="pcard pcard-compact rise d1">
+        <img className="picon" src={iconMbti} alt="" aria-hidden="true" />
+        <div className="pcard-compact-body">
           <h2 className="pcard-title">MBTI人格类型</h2>
-        </div>
-        <div className={`pselect blue ${data.mbti ? 'filled' : ''}`}>
-          <select
-            aria-label="选择你的MBTI"
-            value={data.mbti}
-            onChange={(e) => { setSaved(false); setData((p) => ({ ...p, mbti: e.target.value })) }}
-          >
-            <option value="">请选择你的MBTI</option>
-            {MBTI_TYPES.map((t) => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
-          <svg viewBox="0 0 24 24" className="pselect-caret"><path d="m6 9 6 6 6-6" /></svg>
+          <div className={`pselect blue ${data.mbti ? 'filled' : ''}`}>
+            <select
+              aria-label="选择你的MBTI"
+              value={data.mbti}
+              onChange={(e) => { setSaved(false); setData((p) => ({ ...p, mbti: e.target.value })) }}
+            >
+              <option value="">请选择你的MBTI</option>
+              {MBTI_TYPES.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+            <svg viewBox="0 0 24 24" className="pselect-caret"><path d="m6 9 6 6 6-6" /></svg>
+          </div>
         </div>
       </div>
 
-      <div className="pcard rise d2">
-        <div className="pcard-head">
-          <img className="picon" src={iconZodiac} alt="" aria-hidden="true" />
+      <div className="pcard pcard-compact rise d2">
+        <img className="picon" src={iconZodiac} alt="" aria-hidden="true" />
+        <div className="pcard-compact-body">
           <h2 className="pcard-title">我的星座</h2>
-        </div>
-        <div className={`pselect green ${data.zodiac ? 'filled' : ''}`}>
-          <select
-            aria-label="选择星座"
-            value={data.zodiac}
-            onChange={(e) => { setSaved(false); setData((p) => ({ ...p, zodiac: e.target.value })) }}
-          >
-            <option value="">请选择星座</option>
-            {ZODIAC_SIGNS.map((z) => (
-              <option key={z} value={z}>{z}</option>
-            ))}
-          </select>
-          <svg viewBox="0 0 24 24" className="pselect-caret"><path d="m6 9 6 6 6-6" /></svg>
+          <div className={`pselect green ${data.zodiac ? 'filled' : ''}`}>
+            <select
+              aria-label="选择星座"
+              value={data.zodiac}
+              onChange={(e) => { setSaved(false); setData((p) => ({ ...p, zodiac: e.target.value })) }}
+            >
+              <option value="">请选择星座</option>
+              {ZODIAC_SIGNS.map((z) => (
+                <option key={z} value={z}>{z}</option>
+              ))}
+            </select>
+            <svg viewBox="0 0 24 24" className="pselect-caret"><path d="m6 9 6 6 6-6" /></svg>
+          </div>
         </div>
       </div>
 

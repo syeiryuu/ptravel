@@ -6,6 +6,13 @@ body{background:#e9ebee;font-family:'Noto Sans SC',-apple-system,sans-serif;-web
 button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 
 .stage{min-height:100svh;width:100%;display:flex;align-items:center;justify-content:center;padding:22px}
+/* Letterbox fill tones — match each page so the padding blends in. Used mainly
+   on phones where the artboard is scaled and centred with space around it. */
+.stage-welcome{background:linear-gradient(168deg,#fdfbef 0%,#fbf7e4 34%,#eef4dd 62%,#dcf0dd 100%)}
+.stage-machine{background:linear-gradient(180deg,#fdfbef 0%,#f7ecf1 46%,#efdcf0 100%)}
+.stage-result{background:linear-gradient(158deg,#ffd8e6 0%,#f7cbe9 32%,#e3c2f3 66%,#cdb4f5 100%)}
+.stage-result-super{background:linear-gradient(158deg,#ffe6c4 0%,#ffd8e6 30%,#f3c8ec 64%,#d7b7f5 100%)}
+.stage-profile{background:linear-gradient(170deg,#fbdbe8 0%,#f7d3e6 30%,#f6d7e0 60%,#fadfe0 100%)}
 .device{width:375px;height:812px;position:relative;overflow:hidden;border-radius:20px;background:#fff;box-shadow:0 24px 60px rgba(45,55,72,.22)}
 .page{position:absolute;top:0;left:0;width:375px;height:812px;overflow:hidden}
 .tag-note{position:absolute;top:26px;left:24px;z-index:9;font-size:11px;color:#a9a49c;letter-spacing:.2px}
@@ -74,7 +81,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 .g3{width:13px;height:13px;left:150px;bottom:64px;opacity:.6}
 /* Luck badge — rendered image (幸运 / 超级幸运) with the live number overlaid.
    The image carries the 幸运/超级幸运 word; .badge-num draws the +NNN below it. */
-.badge{position:absolute;right:14px;top:88px;z-index:4;width:92px;height:auto;display:block}
+.badge{position:absolute;right:18px;top:96px;z-index:4;width:88px;height:auto;display:block}
 .badge-img{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 15px rgba(180,110,150,.32))}
 /* +NNN overlay: sits on the lower half of the medallion (above the ribbons).
    These offsets are tuned to the badge art and re-checked live. */
@@ -242,7 +249,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 /* ---------- Page 4: Profile (我的) ---------- */
 .profile{background:linear-gradient(170deg,#fbdbe8 0%,#f7d3e6 30%,#f6d7e0 60%,#fadfe0 100%);
   overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:44px 22px calc(62px + 26px);display:flex;flex-direction:column;align-items:center}
+  padding:20px 22px calc(62px + 20px);display:flex;flex-direction:column;align-items:center}
 /* subtle sparkle dots on the pink backdrop */
 .profile::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(circle at 16% 12%,rgba(255,255,255,.7) 0 3px,transparent 4px),
@@ -264,13 +271,13 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 .profile .g3{width:13px;height:13px;left:40px;top:520px;bottom:auto;opacity:.8;background:#ffd9ec}
 
 /* Title 我的 — real 3D balloon-lettering asset */
-.profile-title{position:relative;z-index:1;margin:18px 0 16px;display:flex;justify-content:center;line-height:0}
-.profile-title-img{width:150px;height:auto;display:block;
+.profile-title{position:relative;z-index:1;margin:6px 0 12px;display:flex;justify-content:center;line-height:0}
+.profile-title-img{width:120px;height:auto;display:block;
   filter:drop-shadow(0 8px 14px rgba(180,110,170,.3))}
 
 /* Cards */
-.pcard{position:relative;z-index:1;width:100%;max-width:330px;margin:0 0 16px;
-  background:rgba(255,255,255,.94);border-radius:24px;padding:18px 20px 20px;
+.pcard{position:relative;z-index:1;width:100%;max-width:330px;margin:0 0 12px;
+  background:rgba(255,255,255,.94);border-radius:22px;padding:16px 18px;
   box-shadow:0 16px 34px rgba(180,120,160,.2),inset 0 1px 0 rgba(255,255,255,.9)}
 .pcard-head{display:flex;align-items:center;gap:13px;margin-bottom:16px}
 .pcard-title{font-size:19px;font-weight:800;color:#4a4453;letter-spacing:.3px}
@@ -287,6 +294,16 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 /* 3D icon tiles — real rendered assets */
 .picon{flex:none;width:56px;height:56px;display:block;object-fit:contain;
   filter:drop-shadow(0 6px 11px rgba(120,110,160,.3))}
+
+/* Compact horizontal card (MBTI / 星座): icon on the left, title + select
+   stacked on the right — same footprint as the 今日偏好 card, so the whole
+   profile page fits without scrolling/clipping. */
+.pcard-compact{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.pcard-compact .picon{width:48px;height:48px}
+.pcard-compact-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.pcard-compact .pcard-title{font-size:16px}
+.pcard-compact .pselect select{height:46px}
+.pcard-compact .pselect::before{height:40%}
 
 /* Pill-shaped select (native <select> styled).
    Rounded jelly capsule: soft tinted gradient, glossy top highlight,
@@ -339,7 +356,7 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 .pref-pill.pink.active{color:#e5709f;background:linear-gradient(180deg,#fce3ec,#f8d2df)}
 
 /* Save button (shares the warm gacha CTA feel) */
-.save-btn{position:relative;z-index:1;margin-top:8px;width:270px;height:58px;border-radius:29px;
+.save-btn{position:relative;z-index:1;margin-top:4px;width:270px;height:54px;border-radius:27px;
   font-size:19px;font-weight:800;color:#fff;letter-spacing:4px;
   background:linear-gradient(180deg,#ffd977 0%,#ffc55c 48%,#f9b23f 100%);
   box-shadow:0 7px 0 #eda52f,0 14px 22px rgba(238,167,50,.36),inset 0 2px 3px rgba(255,255,255,.7);
@@ -370,8 +387,8 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
     display:flex;align-items:center;justify-content:center;
     height:100dvh;min-height:100dvh;width:100vw;
     padding-top:env(safe-area-inset-top);
-    padding-bottom:calc(58px + env(safe-area-inset-bottom));
-    background:linear-gradient(168deg,#fdfbef 0%,#fbf7e4 40%,#eef4dd 70%,#dcf0dd 100%)}
+    padding-bottom:calc(58px + env(safe-area-inset-bottom))}
+  /* background comes from the .stage-* tone class (set per page in JS) */
   .device{width:375px;height:812px;border-radius:0;box-shadow:none;
     flex:none;transform-origin:center center;
     transform:scale(min(
