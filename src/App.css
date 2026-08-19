@@ -249,7 +249,8 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 /* ---------- Page 4: Profile (我的) ---------- */
 .profile{background:linear-gradient(170deg,#fbdbe8 0%,#f7d3e6 30%,#f6d7e0 60%,#fadfe0 100%);
   overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:20px 22px calc(62px + 20px);display:flex;flex-direction:column;align-items:center}
+  padding:16px 22px calc(62px + 16px);display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start}
 /* subtle sparkle dots on the pink backdrop */
 .profile::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(circle at 16% 12%,rgba(255,255,255,.7) 0 3px,transparent 4px),
@@ -271,13 +272,13 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 .profile .g3{width:13px;height:13px;left:40px;top:520px;bottom:auto;opacity:.8;background:#ffd9ec}
 
 /* Title 我的 — real 3D balloon-lettering asset */
-.profile-title{position:relative;z-index:1;margin:6px 0 12px;display:flex;justify-content:center;line-height:0}
-.profile-title-img{width:120px;height:auto;display:block;
+.profile-title{position:relative;z-index:1;margin:0 0 10px;display:flex;justify-content:center;line-height:0;flex:none}
+.profile-title-img{width:104px;height:auto;display:block;
   filter:drop-shadow(0 8px 14px rgba(180,110,170,.3))}
 
 /* Cards */
-.pcard{position:relative;z-index:1;width:100%;max-width:330px;margin:0 0 12px;
-  background:rgba(255,255,255,.94);border-radius:22px;padding:16px 18px;
+.pcard{position:relative;z-index:1;width:100%;max-width:330px;margin:0 0 10px;flex:none;
+  background:rgba(255,255,255,.94);border-radius:22px;padding:14px 16px;
   box-shadow:0 16px 34px rgba(180,120,160,.2),inset 0 1px 0 rgba(255,255,255,.9)}
 .pcard-head{display:flex;align-items:center;gap:13px;margin-bottom:16px}
 .pcard-title{font-size:19px;font-weight:800;color:#4a4453;letter-spacing:.3px}
@@ -298,11 +299,11 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 /* Compact horizontal card (MBTI / 星座): icon on the left, title + select
    stacked on the right — same footprint as the 今日偏好 card, so the whole
    profile page fits without scrolling/clipping. */
-.pcard-compact{display:flex;align-items:center;gap:12px;padding:14px 16px}
-.pcard-compact .picon{width:48px;height:48px}
-.pcard-compact-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.pcard-compact{display:flex;align-items:center;gap:12px;padding:12px 16px}
+.pcard-compact .picon{width:46px;height:46px}
+.pcard-compact-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
 .pcard-compact .pcard-title{font-size:16px}
-.pcard-compact .pselect select{height:46px}
+.pcard-compact .pselect select{height:44px}
 .pcard-compact .pselect::before{height:40%}
 
 /* Pill-shaped select (native <select> styled).
