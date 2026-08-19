@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
 
 *{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
 body{background:#e9ebee;font-family:'Noto Sans SC',-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
 button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 
@@ -114,6 +115,9 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
 /* The "right now" line: real measured conditions (weather, sunset, moon).
    Deliberately quiet - it is context for the suggestion, not the headline. */
 .oracle-line{margin-top:10px;font-size:13px;color:#9a86ae;letter-spacing:.4px;font-style:italic}
+/* Quiet hint shown only when location was unavailable and we used the default
+   origin (恒电大厦). Deliberately faint — it explains, it does not alarm. */
+.loc-hint{margin-top:6px;font-size:11px;color:#b7b0be;letter-spacing:.2px}
 
 /* Super-lucky page: a warm golden aura layered over the pink backdrop. */
 .result.super{background:linear-gradient(158deg,#ffe6c4 0%,#ffd8e6 30%,#f3c8ec 64%,#d7b7f5 100%)}
@@ -352,10 +356,18 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
   .machine-small.float{transform:translateX(-50%)}
 }
 
-/* Scale the fixed 375x812 artboard to fit any viewport without cropping. */
+/* Scale the fixed 375x812 artboard to fit any viewport without cropping.
+   On phones/WeChat we lock the whole document to the *dynamic* viewport
+   height (100dvh) and forbid scrolling, so the artboard is centred and
+   fully visible in one screen — no more up/down scrolling in WeChat where
+   svh miscalculates against the collapsing address bar. */
 @media (max-width:768px){
-  .stage{padding:0;place-items:center;overflow:hidden}
-  .device{width:375px;height:812px;border-radius:0;box-shadow:none;transform-origin:center center;transform:scale(min(calc(100vw / 375),calc(100svh / 812)))}
-  .pager{right:12px;top:auto;bottom:16px;transform:none;grid-auto-flow:column}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none;position:fixed;inset:0;width:100%}
+  .stage{padding:0;place-items:center;overflow:hidden;
+    height:100dvh;min-height:100dvh;width:100vw;
+    padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  .device{width:375px;height:812px;border-radius:0;box-shadow:none;transform-origin:center center;
+    transform:scale(min(calc(100vw / 375),calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 812)))}
+  .pager{right:12px;top:auto;bottom:calc(16px + env(safe-area-inset-bottom));transform:none;grid-auto-flow:column}
   .pager button{width:32px;height:32px;background:rgba(255,255,255,.92)}
 }

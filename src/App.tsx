@@ -10,6 +10,7 @@ import iconHeart from './assets/gacha/icon-heart.webp'
 import badgeNormal from './assets/gacha/badge-normal.webp'
 import badgeSuper from './assets/gacha/badge-super.webp'
 import {
+  bearingDirection,
   distanceKm,
   draw as drawSuggestion,
   navigationUrl,
@@ -310,6 +311,7 @@ function App() {
                 luck={luck}
                 onChange={drawAgain}
                 origin={context.origin}
+                locationSource={context.locationSource}
               />
             )}
           </div>
@@ -425,13 +427,16 @@ function Result({
   luck,
   onChange,
   origin,
+  locationSource,
 }: {
   item: Suggestion | null
   /** Freshly rolled luck for this reveal. */
   luck: Luck
   onChange: () => void
-  /** User position, when granted; enables a real distance readout. */
+  /** Origin used for distance/direction (always set once context loads). */
   origin?: { lng: number; lat: number }
+  /** Where the origin came from; 'default' means we fell back to 恒电大厦. */
+  locationSource?: RuntimeContext['locationSource']
 }) {
   const shown = useCountUp(luck.value, 760)
 
@@ -461,14 +466,22 @@ function Result({
       ? `${Math.round((item.durationMinutes / 60) * 10) / 10}小时`
       : `${item.durationMinutes}分钟`
 
-  // Only shown when the user actually shared their location - otherwise a
-  // distance would be a guess dressed up as a fact.
-  const distanceLabel = origin
-    ? (() => {
-        const km = distanceKm(origin, item)
-        return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`
-      })()
-    : null
+  // A real fix (amap/gps) lets us state a real distance and direction. When we
+  // only have the default origin, we neither show a distance chip nor recompute
+  // the direction - that would be a guess dressed up as a fact. In that case we
+  // keep the build-time `direction` and add a quiet "location unknown" hint.
+  const hasRealFix = !!origin && locationSource !== 'default'
+
+  const distanceLabel =
+    hasRealFix && origin
+      ? (() => {
+          const km = distanceKm(origin, item)
+          return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`
+        })()
+      : null
+
+  const directionLabel =
+    hasRealFix && origin ? bearingDirection(origin, item) : item.direction
 
   return (
     <section className={`page result ${luck.isSuper ? 'super' : ''}`}>
@@ -493,7 +506,10 @@ function Result({
           <span className="chip peach rise d3">{item.categoryLabel.split(' / ')[0]}</span>
         </div>
         <h2 className="headline rise d2">{item.name}</h2>
-        <p className="meta rise d3"><svg viewBox="0 0 24 24" className="pin"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" /></svg>{item.direction}方向 · {item.hook}</p>
+        <p className="meta rise d3"><svg viewBox="0 0 24 24" className="pin"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" /></svg>{directionLabel}方向 · {item.hook}</p>
+        {!hasRealFix && (
+          <p className="loc-hint rise d3">未获取到位置，按默认区域推荐</p>
+        )}
         <p className="body rise d4">{item.reason}</p>
         <p className="oracle-line rise d4">「{item.oracle}」</p>
         <div className="row rise d5">

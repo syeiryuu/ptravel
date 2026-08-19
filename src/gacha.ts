@@ -83,6 +83,31 @@ export function distanceKm(
   return 2 * EARTH_RADIUS_KM * Math.asin(Math.sqrt(h))
 }
 
+/** 中文八方位, indexed by 45° sector starting at due north. */
+const COMPASS_8 = ['正北', '东北', '正东', '东南', '正南', '西南', '正西', '西北']
+
+/**
+ * Real compass direction from `a` to `b` as a 中文 八方位 (正北/东北/...).
+ * Replaces the build-time `direction` field, which was computed against a
+ * fixed origin and so was wrong once we know where the user actually is.
+ */
+export function bearingDirection(
+  a: { lng: number; lat: number },
+  b: { lng: number; lat: number },
+): string {
+  const toRad = (deg: number) => (deg * Math.PI) / 180
+  const lat1 = toRad(a.lat)
+  const lat2 = toRad(b.lat)
+  const dLng = toRad(b.lng - a.lng)
+  const y = Math.sin(dLng) * Math.cos(lat2)
+  const x =
+    Math.cos(lat1) * Math.sin(lat2) -
+    Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng)
+  const deg = (Math.atan2(y, x) * 180) / Math.PI
+  const normalised = (deg + 360) % 360
+  return COMPASS_8[Math.round(normalised / 45) % 8]
+}
+
 /**
  * Is the venue open at `hour`, and is there enough time left to enjoy it?
  * closeHour may exceed 24 to express "closes after midnight".
