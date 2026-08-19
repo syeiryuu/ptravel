@@ -360,16 +360,24 @@ button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
    svh miscalculates against the collapsing address bar. */
 @media (max-width:768px){
   html,body{height:100%;overflow:hidden;overscroll-behavior:none;position:fixed;inset:0;width:100%}
-  /* Fill the width: the 375-wide artboard is scaled up to the screen width, so
-     there are no side gutters. Height follows the same scale; on tall phones a
-     little space may remain top/bottom, which the .stage background covers. */
-  .stage{padding:0;overflow:hidden;display:block;position:relative;
+  /* Scale the whole 375x812 artboard by the SMALLER of the width/height ratios
+     so it is always fully visible - never cropped, never overflowing (which is
+     what pushed the CTA under the tab bar). The available height excludes the
+     bottom tab bar (58px + safe area) and the top safe area, so nothing hides
+     behind them. Any leftover space around the artboard is filled by the .stage
+     background gradient, so the letterboxing is invisible. */
+  .stage{padding:0;overflow:hidden;position:relative;
+    display:flex;align-items:center;justify-content:center;
     height:100dvh;min-height:100dvh;width:100vw;
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:calc(58px + env(safe-area-inset-bottom));
     background:linear-gradient(168deg,#fdfbef 0%,#fbf7e4 40%,#eef4dd 70%,#dcf0dd 100%)}
   .device{width:375px;height:812px;border-radius:0;box-shadow:none;
-    position:absolute;left:0;top:0;
-    transform-origin:top left;
-    transform:scale(calc(100vw / 375))}
+    flex:none;transform-origin:center center;
+    transform:scale(min(
+      calc(100vw / 375),
+      calc((100dvh - env(safe-area-inset-top) - 58px - env(safe-area-inset-bottom)) / 812)
+    ))}
   /* The bottom tab bar is lifted out of the scaled artboard and pinned to the
      real viewport bottom, so the 我的 entry is always visible and full-width,
      regardless of how the artboard scales. */
