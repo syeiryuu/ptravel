@@ -320,35 +320,34 @@ function App() {
             <Profile />
           </div>
         )}
-
-        {tab === 'main' && (
-          <nav className="pager">
-            <button type="button" className={page === 'welcome' ? 'on' : ''} onClick={() => setPage('welcome')}>1</button>
-            <button type="button" className={page === 'machine' ? 'on' : ''} onClick={() => setPage('machine')}>2</button>
-            <button type="button" className={page === 'result' ? 'on' : ''} onClick={() => setPage('result')}>3</button>
-            <button type="button" className="reset" onClick={reset}>↻</button>
-          </nav>
-        )}
-
-        <nav className="tabbar">
-          <button
-            type="button"
-            className={`tab ${tab === 'main' ? 'on' : ''}`}
-            onClick={() => setTab('main')}
-          >
-            <svg viewBox="0 0 24 24" className="tab-ico"><path d="M3 11.5 12 4l9 7.5" /><path d="M5 10v9h14v-9" /></svg>
-            <span>首页</span>
-          </button>
-          <button
-            type="button"
-            className={`tab ${tab === 'profile' ? 'on' : ''}`}
-            onClick={() => setTab('profile')}
-          >
-            <svg viewBox="0 0 24 24" className="tab-ico"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" /></svg>
-            <span>我的</span>
-          </button>
-        </nav>
       </div>
+
+      {/* Kept outside .device so the scale transform on the artboard does not
+          shrink it: the tab bar is pinned to the real viewport bottom and the
+          我的 entry is always reachable. */}
+      <nav className="tabbar">
+        <button
+          type="button"
+          className={`tab ${tab === 'main' ? 'on' : ''}`}
+          onClick={() => {
+            // From 我的 -> just switch back. When already on 首页, tapping it
+            // restarts the flow from the welcome page (replaces the old ↻).
+            if (tab === 'main') reset()
+            else setTab('main')
+          }}
+        >
+          <svg viewBox="0 0 24 24" className="tab-ico"><path d="M3 11.5 12 4l9 7.5" /><path d="M5 10v9h14v-9" /></svg>
+          <span>首页</span>
+        </button>
+        <button
+          type="button"
+          className={`tab ${tab === 'profile' ? 'on' : ''}`}
+          onClick={() => setTab('profile')}
+        >
+          <svg viewBox="0 0 24 24" className="tab-ico"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" /></svg>
+          <span>我的</span>
+        </button>
+      </nav>
     </div>
   )
 }
@@ -461,10 +460,12 @@ function Result({
     // so the button never silently does nothing.
     if (!opened) window.location.href = url
   }
+  // This is the suggested *dwell* time (how long to spend there), not travel
+  // time. Label it explicitly so it is not mistaken for a commute estimate.
   const durationLabel =
     item.durationMinutes >= 60
-      ? `${Math.round((item.durationMinutes / 60) * 10) / 10}小时`
-      : `${item.durationMinutes}分钟`
+      ? `建议停留${Math.round((item.durationMinutes / 60) * 10) / 10}小时`
+      : `建议停留${item.durationMinutes}分钟`
 
   // A real fix (amap/gps) lets us state a real distance and direction. When we
   // only have the default origin, we neither show a distance chip nor recompute
