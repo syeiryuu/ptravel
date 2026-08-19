@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
-import machineSmall from './assets/gacha/machine-small.png'
-import machineLarge from './assets/gacha/machine-large.png'
-import machineBackground from './assets/gacha/machine-background.png'
-import wordmark from './assets/gacha/wordmark.png'
-import profileTitle from './assets/gacha/profile-title.png'
-import iconMbti from './assets/gacha/icon-mbti.png'
-import iconZodiac from './assets/gacha/icon-zodiac.png'
-import iconHeart from './assets/gacha/icon-heart.png'
-import badgeNormal from './assets/gacha/badge-normal.png'
-import badgeSuper from './assets/gacha/badge-super.png'
+import { useEffect, useRef, useState, type ImgHTMLAttributes } from 'react'
+import machineSmall from './assets/gacha/machine-small.webp'
+import machineLarge from './assets/gacha/machine-large.webp'
+import machineBackground from './assets/gacha/machine-background.webp'
+import wordmark from './assets/gacha/wordmark.webp'
+import profileTitle from './assets/gacha/profile-title.webp'
+import iconMbti from './assets/gacha/icon-mbti.webp'
+import iconZodiac from './assets/gacha/icon-zodiac.webp'
+import iconHeart from './assets/gacha/icon-heart.webp'
+import badgeNormal from './assets/gacha/badge-normal.webp'
+import badgeSuper from './assets/gacha/badge-super.webp'
 import {
   distanceKm,
   draw as drawSuggestion,
@@ -170,6 +170,18 @@ function App() {
     return () => {
       cancelled = true
     }
+  }, [])
+
+  // Warm the image cache for the pages the user is about to reach. The welcome
+  // page shows the small machine + wordmark; the moment they tap 开始扭 we need
+  // the big machine and its background. Kicking those off now (they're only
+  // tens of KB as WebP) means the machine page paints instantly instead of
+  // streaming in. Fire-and-forget; failures are harmless.
+  useEffect(() => {
+    ;[machineLarge, machineBackground, badgeNormal, badgeSuper].forEach((src) => {
+      const img = new Image()
+      img.src = src
+    })
   }, [])
 
   // Resolve location and weather once, in the background. We ask on mount
@@ -344,11 +356,11 @@ function Welcome({ onStart }: { onStart: () => void }) {
     <section className="page welcome">
       <span className="tag-note">Page 1 Welcome</span>
       <h1 className="wordmark rise" aria-label="下一站扭蛋">
-        <img className="wordmark-img" src={wordmark} alt="下一站扭蛋" />
+        <FadeImg className="wordmark-img" src={wordmark} alt="下一站扭蛋" />
       </h1>
       <div className="machine-slot rise d1">
         <i className="deco star-a" /><i className="deco star-b" /><i className="deco star-c" /><i className="deco star-d" />
-        <img className="machine-small float" src={machineSmall} alt="下一站扭蛋机" />
+        <FadeImg className="machine-small float" src={machineSmall} alt="下一站扭蛋机" />
       </div>
       <p className="lead-line rise d2">天灵灵地灵灵，</p>
       <p className="lead-line second rise d3">我们P人要出行！</p>
@@ -387,7 +399,7 @@ function Machine({
         disabled={busy || !ready}
         aria-label="扭一扭"
       >
-        <img className={`machine-large ${busy ? '' : 'float'}`} src={machineLarge} alt="下一站扭蛋机" />
+        <FadeImg className={`machine-large ${busy ? '' : 'float'}`} src={machineLarge} alt="下一站扭蛋机" />
       </button>
 
       {(phase === 'dropping' || phase === 'opening') && (
@@ -608,6 +620,32 @@ function Profile() {
         {saved ? '已保存 ✓' : '保存设置'}
       </button>
     </section>
+  )
+}
+
+/**
+ * An <img> that fades in once decoded, so a slow network shows a clean
+ * empty space that resolves into the full picture — never a half-painted,
+ * top-to-bottom "streaming" image. Falls back to showing immediately for
+ * cached images (onLoad fires synchronously) and when motion is reduced.
+ */
+function FadeImg({
+  className = '',
+  style,
+  ...rest
+}: ImgHTMLAttributes<HTMLImageElement>) {
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <img
+      {...rest}
+      className={className}
+      onLoad={() => setLoaded(true)}
+      style={{
+        ...style,
+        opacity: loaded ? 1 : 0,
+        transition: prefersReducedMotion() ? undefined : 'opacity .34s ease',
+      }}
+    />
   )
 }
 
